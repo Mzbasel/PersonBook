@@ -14,31 +14,17 @@ namespace PersonBook
 
         public void AddPerson(string firstName, string lastName)
         {
-            if(firstName.Equals("") || lastName.Equals(""))
+            if (firstName.Equals("") || lastName.Equals(""))
             {
-                throw new Exception("First name or Last name can't be empty");
+                Console.WriteLine("First name or Last name can't be empty");
             }
 
-            if(_person.Count > 0)
+            _person.Add(new Person
             {
-                var lastIndexInTheList = _person[_person.Count - 1];
-
-                _person.Add(new Person
-                {
-                    Id = Utils.GenerateId(lastIndexInTheList.Id),
-                    FirstName = firstName,
-                    LastName = lastName
-                });
-            }
-            else
-            {
-                _person.Add(new Person
-                {
-                    Id = 1,
-                    FirstName = firstName,
-                    LastName = lastName
-                });
-            }
+                Id = _person.Count > 0 ? Utils.GenerateId(_person[_person.Count - 1].Id) : 1,
+                FirstName = firstName,
+                LastName = lastName
+            });
         }
 
         public void DeletePerson(int id)
@@ -65,18 +51,25 @@ namespace PersonBook
         {
             var updatedPerson = _person.Find(p => p.Id == id);
 
-            if(firstName == null)
+            try
             {
-                firstName = updatedPerson.FirstName;
-            }
+                if (firstName.Equals(""))
+                {
+                    firstName = updatedPerson.FirstName;
+                }
 
-            if(lastName == null)
+                if (lastName.Equals(""))
+                {
+                    lastName = updatedPerson.LastName;
+                }
+
+                updatedPerson.FirstName = firstName;
+                updatedPerson.LastName = lastName;
+            }
+            catch(Exception e)
             {
-                lastName = updatedPerson.LastName;
+                Console.WriteLine("There is no user with this Id");
             }
-
-            updatedPerson.FirstName = firstName;
-            updatedPerson.LastName = lastName;
         }
     }
 }
